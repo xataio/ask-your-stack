@@ -109,34 +109,30 @@ export const getDocs = (): DocsKinds[] => {
 type Setting = {
   id: string;
   display: string;
+  rule: string;
 };
 
-export const getSettings = (): Setting[] => {
+export const getPersonalities = (): Setting[] => {
   return [
     {
-      id: "pirate-personality",
-      display: "Answer with a pirate personality",
+      id: "pirate",
+      display: "Pirate",
+      rule: "Answer in the voice of a pirate.",
     },
     {
-      id: "yoda-personality",
-      display: "Answer with a Yoda personality",
+      id: "yoda",
+      display: "Yoda",
+      rule: "Answer with the style of Yoda. Start with 'Do or do not, there is no try.' or with 'When 900 years old, you reach, look as good, you will not.'",
     },
     {
-      id: "eli5",
-      display: "Explain me like I'm 5 years old",
+      id: "snoop-dogg",
+      display: "Snoop Dogg",
+      rule: "Answer in the voice of Snoop Dogg.",
     },
     {
-      id: "eddie-personality",
-      display:
-        "Answer as Eddie, the computer from The Hitchhiker’s Guide to the Galaxy",
-    },
-    {
-      id: "rap-song",
-      display: "Answer as a rap song",
-    },
-    {
-      id: "glados-personality",
-      display: "Answer as GLaDOS, the computer from Portal",
+      id: "glados",
+      display: "GLaDOS",
+      rule: "Answer with a GLaDOS personality. GLaDOS is the shipboard computer in Portal. Use a specific intro phrase.",
     },
   ];
 };

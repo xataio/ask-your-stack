@@ -3,7 +3,7 @@ import { InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import { useCallback, useState, useEffect } from "react";
 import styles from "~/styles/Home.module.css";
-import { getDatabases, getDocs, getSettings } from "~/xata";
+import { getDatabases, getDocs, getPersonalities } from "~/xata";
 import { z } from "zod";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
@@ -20,9 +20,9 @@ export async function getStaticProps() {
   }
 
   const docSections = getDocs();
-  const settingOptions = getSettings();
+  const personalities = getPersonalities();
 
-  return { props: { dbs, docSections, settingOptions } };
+  return { props: { dbs, docSections, personalities } };
 }
 
 function prettyFormatNumber(num: number) {
@@ -39,7 +39,7 @@ const useAskXataDocs = () => {
       database: string,
       question: string,
       checked: string[],
-      settings: string[]
+      personality: string
     ) => {
       if (!question) return;
 
@@ -52,7 +52,7 @@ const useAskXataDocs = () => {
           question,
           database,
           checkedDocs: checked,
-          checkedSettings: settings,
+          personality,
         }),
         headers: { "Content-Type": "application/json" },
         openWhenHidden: true,
@@ -133,12 +133,12 @@ export const useGetXataDocs = (database: string, ids: string[] = []) => {
 export default function Home({
   dbs,
   docSections,
-  settingOptions,
+  personalities,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [question, setQuestion] = useState<string>("");
   const [selected, setSelected] = useState<string>(dbs[0].id);
   const [checked, setChecked] = useState<string[]>([]);
-  const [settings, setSettings] = useState<string[]>([]);
+  const [personality, setPersonality] = useState<string>(personalities[0].id);
 
   const { answer, isLoading, records, askQuestion } = useAskXataDocs();
   const { relatedDocs, clearRelated } = useGetXataDocs(selected, records);
@@ -146,7 +146,7 @@ export default function Home({
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     clearRelated();
-    askQuestion(selected, question, checked, settings);
+    askQuestion(selected, question, checked, personality);
   };
 
   // Add/Remove checked item from list
@@ -160,15 +160,10 @@ export default function Home({
     setChecked(updatedList);
   };
 
-  // Add/Remove checked item from list
-  const handleSettingsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    var updatedList = [...settings];
-    if (event.target.checked) {
-      updatedList = [...settings, event.target.value];
-    } else {
-      updatedList.splice(settings.indexOf(event.target.value), 1);
-    }
-    setSettings(updatedList);
+  const handlePersonalityChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setPersonality(event.target.value);
   };
 
   return (
@@ -202,15 +197,15 @@ export default function Home({
               </div>
             ))}
           </div>
-          <h3>Settings</h3>
+          <h3>Select personality</h3>
           <div className={styles.grid}>
-            {settingOptions.map(({ id, display }) => (
-              <div key={`setting-${id}`}>
+            {personalities.map(({ id, display }) => (
+              <div key={`personality-${id}`}>
                 <input
-                  type="checkbox"
+                  type="radio"
                   value={id}
-                  onChange={handleSettingsChange}
-                  checked={settings.includes(id)}
+                  onChange={handlePersonalityChange}
+                  checked={personality === id}
                 ></input>{" "}
                 <label htmlFor="eli5">{display}</label>
               </div>

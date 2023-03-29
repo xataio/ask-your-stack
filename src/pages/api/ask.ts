@@ -1,7 +1,7 @@
 import { AskResult } from "@xata.io/client";
 import { NextRequest } from "next/server";
 import { string, z } from "zod";
-import { getDatabases, getDocs } from "~/xata";
+import { getDatabases, getDocs, getPersonalities } from "~/xata";
 
 export const config = {
   runtime: "edge",
@@ -11,7 +11,7 @@ const bodySchema = z.object({
   database: z.string(),
   question: z.string(),
   checkedDocs: z.string().array(),
-  checkedSettings: z.string().array(),
+  personality: z.string(),
 });
 
 const getStackNames = (checkedDocs: string[]): string[] => {
@@ -64,32 +64,11 @@ const handler = async (req: NextRequest): Promise<Response> => {
     );
   }
 
-  if (body.data.checkedSettings.includes("pirate-personality")) {
-    rules.push("Answer in the voice of a pirate.");
-  }
-
-  if (body.data.checkedSettings.includes("yoda-personality")) {
-    rules.push("Answer in the voice of Yoda.");
-  }
-
-  if (body.data.checkedSettings.includes("eli5")) {
-    rules.push("Answer as you would to a 5 year old.");
-  }
-
-  if (body.data.checkedSettings.includes("eddie-personality")) {
-    rules.push(
-      "Answer with the personality of Eddie, the shipboard computer in The Hitchhiker’s Guide to the Galaxy. Use a specific intro and ending phrase for Eddie. You don't need to put the answer in quotes."
-    );
-  }
-
-  if (body.data.checkedSettings.includes("glados-personality")) {
-    rules.push(
-      "Answer with a GLaDOS personality. GLaDOS is the shipboard computer in Portal. Use a specific intro phrase."
-    );
-  }
-
-  if (body.data.checkedSettings.includes("rap-song")) {
-    rules.push("Answer with a Snoop Doggy Dog personality.");
+  const personalities = getPersonalities();
+  for (const p of personalities) {
+    if (body.data.personality === p.id) {
+      rules.push(p.rule);
+    }
   }
 
   const filter: { [key: string]: any } = {};
