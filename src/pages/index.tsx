@@ -3,8 +3,9 @@ import { InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import { useCallback, useState, useEffect } from "react";
 import styles from "~/styles/Home.module.css";
-import { getDatabases, getDocs } from "~/xata";
+import { getDatabases, getDocs, getSettings } from "~/xata";
 import { z } from "zod";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
 export async function getStaticProps() {
   const dbs = [];
@@ -19,8 +20,9 @@ export async function getStaticProps() {
   }
 
   const docSections = getDocs();
+  const settingOptions = getSettings();
 
-  return { props: { dbs, docSections } };
+  return { props: { dbs, docSections, settingOptions } };
 }
 
 function prettyFormatNumber(num: number) {
@@ -33,7 +35,12 @@ const useAskXataDocs = () => {
   const [records, setRecords] = useState<string[]>([]);
 
   const askQuestion = useCallback(
-    (database: string, question: string, checked: string[]) => {
+    (
+      database: string,
+      question: string,
+      checked: string[],
+      settings: string[]
+    ) => {
       if (!question) return;
 
       setAnswer(undefined);
@@ -41,7 +48,12 @@ const useAskXataDocs = () => {
 
       void fetchEventSource(`/api/ask`, {
         method: "POST",
-        body: JSON.stringify({ question, database, checkedDocs: checked }),
+        body: JSON.stringify({
+          question,
+          database,
+          checkedDocs: checked,
+          checkedSettings: settings,
+        }),
         headers: { "Content-Type": "application/json" },
         openWhenHidden: true,
         onmessage(ev) {
@@ -121,10 +133,12 @@ export const useGetXataDocs = (database: string, ids: string[] = []) => {
 export default function Home({
   dbs,
   docSections,
+  settingOptions,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [question, setQuestion] = useState<string>("");
   const [selected, setSelected] = useState<string>(dbs[0].id);
   const [checked, setChecked] = useState<string[]>([]);
+  const [settings, setSettings] = useState<string[]>([]);
 
   const { answer, isLoading, records, askQuestion } = useAskXataDocs();
   const { relatedDocs, clearRelated } = useGetXataDocs(selected, records);
@@ -132,7 +146,7 @@ export default function Home({
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     clearRelated();
-    askQuestion(selected, question, checked);
+    askQuestion(selected, question, checked, settings);
   };
 
   // Add/Remove checked item from list
@@ -144,6 +158,17 @@ export default function Home({
       updatedList.splice(checked.indexOf(event.target.value), 1);
     }
     setChecked(updatedList);
+  };
+
+  // Add/Remove checked item from list
+  const handleSettingsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    var updatedList = [...settings];
+    if (event.target.checked) {
+      updatedList = [...settings, event.target.value];
+    } else {
+      updatedList.splice(settings.indexOf(event.target.value), 1);
+    }
+    setSettings(updatedList);
   };
 
   return (
@@ -177,6 +202,20 @@ export default function Home({
               </div>
             ))}
           </div>
+          <h3>Settings</h3>
+          <div className={styles.grid}>
+            {settingOptions.map(({ id, display }) => (
+              <div key={`setting-${id}`}>
+                <input
+                  type="checkbox"
+                  value={id}
+                  onChange={handleSettingsChange}
+                  checked={settings.includes(id)}
+                ></input>{" "}
+                <label htmlFor="eli5">{display}</label>
+              </div>
+            ))}
+          </div>
           <form className={styles.inputGroup} onSubmit={handleFormSubmit}>
             <input
               value={question}
@@ -191,7 +230,7 @@ export default function Home({
             </div>
           </form>
           {answer ? (
-            <p className={styles.response}>{answer}</p>
+            <ReactMarkdown>{answer}</ReactMarkdown>
           ) : isLoading ? (
             <div style={{ display: "flex", justifyContent: "center" }}>
               <span className={styles.loader} />
