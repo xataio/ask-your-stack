@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://demo-uni3q8.us-east-1.xata.sh/db/askyourstack",
+  "codegen": {
+    "output": "src/xata.ts"
+  }
+}

@@ -3,26 +3,15 @@ import { InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import { useCallback, useState, useEffect } from "react";
 import styles from "~/styles/Home.module.css";
-import { getDatabases, getDocs, getPersonalities } from "~/xata";
+import { getDocs, getPersonalities } from "~/options";
 import { z } from "zod";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
 export async function getStaticProps() {
-  const dbs = [];
-
-  for (const database of getDatabases()) {
-    const { id, name, client: xata, lookupTable } = database;
-    const { aggs } = await xata.db[lookupTable]?.aggregate({
-      total: { count: "*" },
-    });
-
-    dbs.push({ id, name, recordCount: aggs.total });
-  }
-
   const docSections = getDocs();
   const personalities = getPersonalities();
 
-  return { props: { dbs, docSections, personalities } };
+  return { props: { docSections, personalities } };
 }
 
 function prettyFormatNumber(num: number) {
@@ -35,12 +24,7 @@ const useAskXataDocs = () => {
   const [records, setRecords] = useState<string[]>([]);
 
   const askQuestion = useCallback(
-    (
-      database: string,
-      question: string,
-      checked: string[],
-      personality: string
-    ) => {
+    (question: string, checked: string[], personality: string) => {
       if (!question) return;
 
       setAnswer(undefined);
@@ -50,7 +34,6 @@ const useAskXataDocs = () => {
         method: "POST",
         body: JSON.stringify({
           question,
-          database,
           checkedDocs: checked,
           personality,
         }),
@@ -102,7 +85,7 @@ const xataDocsResponse = z.array(
 
 export type XataDocsResponse = z.infer<typeof xataDocsResponse>;
 
-export const useGetXataDocs = (database: string, ids: string[] = []) => {
+export const useGetXataDocs = (ids: string[] = []) => {
   const [relatedDocs, setRelatedDocs] = useState<XataDocsResponse>([]);
 
   useEffect(() => {
@@ -114,14 +97,14 @@ export const useGetXataDocs = (database: string, ids: string[] = []) => {
     const fetchData = async () => {
       const response = await fetch(`/api/docs-get`, {
         method: "POST",
-        body: JSON.stringify({ database, ids }),
+        body: JSON.stringify({ ids }),
         headers: { "Content-Type": "application/json" },
       });
       const data = await response.json();
       setRelatedDocs(xataDocsResponse.parse(data));
     };
     fetchData();
-  }, [database, ids]);
+  }, [ids]);
 
   const clearRelated = useCallback(() => {
     setRelatedDocs([]);
@@ -131,22 +114,20 @@ export const useGetXataDocs = (database: string, ids: string[] = []) => {
 };
 
 export default function Home({
-  dbs,
   docSections,
   personalities,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [question, setQuestion] = useState<string>("");
-  const [selected, setSelected] = useState<string>(dbs[0].id);
   const [checked, setChecked] = useState<string[]>([]);
   const [personality, setPersonality] = useState<string>(personalities[0].id);
 
   const { answer, isLoading, records, askQuestion } = useAskXataDocs();
-  const { relatedDocs, clearRelated } = useGetXataDocs(selected, records);
+  const { relatedDocs, clearRelated } = useGetXataDocs(records);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     clearRelated();
-    askQuestion(selected, question, checked, personality);
+    askQuestion(question, checked, personality);
   };
 
   // Add/Remove checked item from list

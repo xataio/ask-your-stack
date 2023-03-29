@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { getDatabases } from "~/xata";
+import { getXataClient } from "~/xata";
 
 export const config = {
   runtime: "edge",
@@ -8,7 +8,6 @@ export const config = {
 
 const bodySchema = z.object({
   ids: z.string().array(),
-  database: z.string(),
 });
 
 const handler = async (req: NextRequest): Promise<Response> => {
@@ -36,15 +35,9 @@ const handler = async (req: NextRequest): Promise<Response> => {
     columns: ["id", "title", "url", "website"],
   };
 
-  const variant = getDatabases().find((db) => db.id === body.data.database);
-  if (!variant) {
-    return new Response(JSON.stringify({ message: "Invalid database" }), {
-      status: 400,
-    });
-  }
-  const { client: xata, lookupTable, options } = variant;
+  const xata = getXataClient();
 
-  const result = await xata.db[lookupTable]
+  const result = await xata.db.content
     .filter({
       $any: ids.map((id) => ({ id })),
     })

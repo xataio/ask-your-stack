@@ -1,14 +1,14 @@
 import { AskResult } from "@xata.io/client";
 import { NextRequest } from "next/server";
 import { string, z } from "zod";
-import { getDatabases, getDocs, getPersonalities } from "~/xata";
+import { getDocs, getPersonalities } from "~/options";
+import { getXataClient } from "~/xata";
 
 export const config = {
   runtime: "edge",
 };
 
 const bodySchema = z.object({
-  database: z.string(),
   question: z.string(),
   checkedDocs: z.string().array(),
   personality: z.string(),
@@ -42,12 +42,7 @@ const handler = async (req: NextRequest): Promise<Response> => {
   }
 
   const encoder = new TextEncoder();
-  const variant = getDatabases().find((db) => db.id === body.data.database);
-  if (!variant) {
-    return new Response(JSON.stringify({ message: "Invalid database" }), {
-      status: 400,
-    });
-  }
+  const xata = getXataClient();
 
   const stack = getStackNames(body.data.checkedDocs);
 
@@ -89,10 +84,9 @@ const handler = async (req: NextRequest): Promise<Response> => {
 
   console.log(options);
 
-  const { client: xata, lookupTable } = variant;
   const stream = new ReadableStream({
     async start(controller) {
-      xata.db[lookupTable].ask(body.data.question, {
+      xata.db.content.ask(body.data.question, {
         ...options,
         onMessage: (message: AskResult) => {
           controller.enqueue(encoder.encode(`event: message\n`));
