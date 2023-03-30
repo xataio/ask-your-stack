@@ -1,4 +1,4 @@
-# Xata ChatGPT ask questions to Netlify docs
+# Xata ChatGPT ask questions to OSS docs
 
 This is a sample app that uses [Xata ChatGPT](https://xata.io/chatgpt) functionality.
 
