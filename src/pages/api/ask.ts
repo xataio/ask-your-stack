@@ -48,7 +48,7 @@ const handler = async (req: NextRequest): Promise<Response> => {
 
   const rules = [
     "You are a chat bot that answers questions for developers by searching existing documentation.",
-    "Aim to answer in 2 or 3 paragraphs, formatted as markdown.",
+    "Aim to answer in 2 or 3 paragraphs, formatted as markdown. Try to provide code samples whenever possible.",
   ];
 
   if (stack.length > 0) {

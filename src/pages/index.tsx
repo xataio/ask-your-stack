@@ -147,6 +147,13 @@ export default function Home({
     setPersonality(event.target.value);
   };
 
+  let epilog = personalities[0].epilog!;
+  for (const p of personalities) {
+    if (p.id === personality && p.epilog) {
+      epilog = p.epilog;
+    }
+  }
+
   return (
     <>
       <Head>
@@ -158,10 +165,11 @@ export default function Home({
         <div className={styles.container}>
           <h1 className={styles.title}>Ask Your Stack</h1>
 
+          <h3>Select the docs</h3>
           <div className={styles.grid}>
             {docSections.map(({ id, name, docs }) => (
               <div key={`section-${id}`}>
-                <h3>{name}</h3>
+                <h5>{name}</h5>
                 <div className={styles.grid}>
                   {docs.map(({ id, name }) => (
                     <div key={`website-${id}`}>
@@ -197,7 +205,7 @@ export default function Home({
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               className={styles.input}
-              placeholder={"Write a question to ask the chatbot"}
+              placeholder={"Write a question here..."}
             />
             <div className={styles.inputRightElement}>
               <button className={styles.button} type="submit">
@@ -222,6 +230,13 @@ export default function Home({
                   </a>
                 </li>
               ))}
+              <p>
+                Disclaimer: the above answer is generated via the ChatGPT API.
+                Even when provided with the right context, it might hallucinate
+                and invent its own functions and parameters. You might want to
+                check the answers by visiting the above links.
+              </p>
+              <ReactMarkdown>{epilog}</ReactMarkdown>
             </div>
           )}
         </div>
