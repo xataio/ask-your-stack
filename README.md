@@ -1,8 +1,6 @@
-# Xata ChatGPT ask questions to OSS docs
+# Ask Your Stack - have ChatGPT query the docs of your stack
 
 This is a sample app that uses [Xata ChatGPT](https://xata.io/chatgpt) functionality.
-
-> ⚠️ "Xata ChatGPT" is experimental and subject to changes until it reaches general availability.
 
 ## Getting Started
 
@@ -23,25 +21,13 @@ XATA_API_KEY=< your api key>
 XATA_BRANCH=main
 ```
 
-### Start the appy
+### Start the app
 
 ```bash
 npm run dev
 ```
 By default the app runs on [localhost:3000](http://localhost:3000)
 
-## Sample questions
-
-Here are a few questions you can ask the bot:
-* What is netlify?
-* How do I deploy a site?
-* Can I deploy a next.js app on netlify?
-* I get a large function error. How can I fix it?
-* How can I setup a form?
-* How can I test edge functions locally?
-* What is the difference between ISR and SSG?
-* What is netlify graph?
-* Why did Netlify buy Gatsby?
 ---
 
 > 🐛 If you encounter any issues while using Xata, please open a [support ticket](https://support.xata.io/hc/en-usrequests/new).

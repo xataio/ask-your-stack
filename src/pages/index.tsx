@@ -14,10 +14,6 @@ export async function getStaticProps() {
   return { props: { docSections, personalities } };
 }
 
-function prettyFormatNumber(num: number) {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
 const useAskXataDocs = () => {
   const [answer, setAnswer] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
@@ -215,14 +211,16 @@ export default function Home({
   return (
     <>
       <Head>
-        <title>Ask your Stack</title>
-        <meta name="description" content="Xata Chat Demo" />
+        <title>Ask your Stack by Xata</title>
+        <meta
+          name="description"
+          content="Ask ChatGPT questions from the docs of your tech stack"
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <main className={styles.main}>
         <div className={styles.container}>
           <h1 className={styles.title}>Ask Your Stack</h1>
-
           <h3>Select the docs</h3>
           <div className={styles.grid}>
             {docSections.map(({ id, name, docs }) => (

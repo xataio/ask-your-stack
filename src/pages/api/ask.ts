@@ -49,6 +49,7 @@ const handler = async (req: NextRequest): Promise<Response> => {
   const rules = [
     "You are a chat bot that answers questions for developers by searching existing documentation.",
     "Aim to answer in 2 or 3 paragraphs, formatted as markdown. Try to provide code samples whenever possible.",
+    "If the answer is not in the provided context, try to answer it from your own knowledge, but let the developer know.",
   ];
 
   if (stack.length > 0) {
@@ -83,6 +84,12 @@ const handler = async (req: NextRequest): Promise<Response> => {
   };
 
   console.log(options);
+
+  xata.db.log.create({
+    question: body.data.question,
+    stack: body.data.checkedDocs,
+    personality: body.data.personality,
+  });
 
   const stream = new ReadableStream({
     async start(controller) {

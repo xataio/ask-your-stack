@@ -16,6 +16,15 @@ const tables = [
       { name: "content", type: "text" },
     ],
   },
+  {
+    name: "log",
+    columns: [
+      { name: "question", type: "string" },
+      { name: "stack", type: "multiple" },
+      { name: "personality", type: "string" },
+      { name: "askedAt", type: "datetime", defaultValue: "now" },
+    ],
+  },
 ] as const;
 
 export type SchemaTables = typeof tables;
@@ -24,8 +33,12 @@ export type InferredTypes = SchemaInference<SchemaTables>;
 export type Content = InferredTypes["content"];
 export type ContentRecord = Content & XataRecord;
 
+export type Log = InferredTypes["log"];
+export type LogRecord = Log & XataRecord;
+
 export type DatabaseSchema = {
   content: ContentRecord;
+  log: LogRecord;
 };
 
 const DatabaseClient = buildClient();
