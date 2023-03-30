@@ -113,13 +113,47 @@ export const useGetXataDocs = (ids: string[] = []) => {
   return { relatedDocs, clearRelated };
 };
 
+export function useLocalStorage<T>(
+  key: string,
+  initialValue: T
+): [T, (value: T) => void] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    // Check if running on the client-side
+    if (typeof window !== "undefined") {
+      try {
+        const item = window.localStorage.getItem(key);
+        return item ? JSON.parse(item) : initialValue;
+      } catch (error) {
+        console.error(error);
+        return initialValue;
+      }
+    }
+    return initialValue;
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem(key, JSON.stringify(storedValue));
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, [key, storedValue]);
+
+  return [storedValue, setStoredValue];
+}
+
 export default function Home({
   docSections,
   personalities,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [question, setQuestion] = useState<string>("");
-  const [checked, setChecked] = useState<string[]>([]);
-  const [personality, setPersonality] = useState<string>(personalities[0].id);
+  const [checked, setChecked] = useLocalStorage<string[]>("docsChecked", []);
+  const [personality, setPersonality] = useLocalStorage<string>(
+    "personality",
+    personalities[0].id
+  );
   const [sampleQuestions, setSampleQuestions] = useState<string[]>([]);
 
   const { answer, isLoading, records, askQuestion } = useAskXataDocs();
