@@ -120,9 +120,24 @@ export default function Home({
   const [question, setQuestion] = useState<string>("");
   const [checked, setChecked] = useState<string[]>([]);
   const [personality, setPersonality] = useState<string>(personalities[0].id);
+  const [sampleQuestions, setSampleQuestions] = useState<string[]>([]);
 
   const { answer, isLoading, records, askQuestion } = useAskXataDocs();
   const { relatedDocs, clearRelated } = useGetXataDocs(records);
+
+  useEffect(() => {
+    const sampleQuestions: string[] = [];
+    for (const question of docSections) {
+      for (const doc of question.docs) {
+        if (doc.sampleQuestion && checked.includes(doc.id)) {
+          if (!sampleQuestions.includes(doc.sampleQuestion)) {
+            sampleQuestions.push(doc.sampleQuestion);
+          }
+        }
+      }
+    }
+    setSampleQuestions(sampleQuestions);
+  }, [checked, docSections]);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -145,6 +160,15 @@ export default function Home({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setPersonality(event.target.value);
+  };
+
+  const handleSampleClick = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    event.preventDefault(); // Prevent the default navigation behavior
+    setQuestion(event.currentTarget.innerText);
+    clearRelated();
+    askQuestion(event.currentTarget.innerText, checked, personality);
   };
 
   let epilog = personalities[0].epilog!;
@@ -218,6 +242,17 @@ export default function Home({
           ) : isLoading ? (
             <div style={{ display: "flex", justifyContent: "center" }}>
               <span className={styles.loader} />
+            </div>
+          ) : sampleQuestions.length > 0 ? (
+            <div>
+              <p>No inspiration? Try one of these:</p>
+              {sampleQuestions.map((q) => (
+                <li key={q}>
+                  <a href="#" onClick={handleSampleClick}>
+                    {q}
+                  </a>
+                </li>
+              ))}
             </div>
           ) : null}
           {relatedDocs.length > 0 && (

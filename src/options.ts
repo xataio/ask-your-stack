@@ -1,6 +1,7 @@
 type Docs = {
   id: string;
   name: string;
+  sampleQuestion?: string;
 };
 
 type DocsKinds = {
@@ -21,10 +22,12 @@ export const getDocs = (): DocsKinds[] => {
         {
           id: "nuxt2-docs",
           name: "Nuxt",
+          sampleQuestion: "How do I get static props?",
         },
         {
           id: "reactjs-docs",
           name: "React",
+          sampleQuestion: "What is a hook?",
         },
         {
           id: "vuejs-guide",
@@ -53,11 +56,13 @@ export const getDocs = (): DocsKinds[] => {
         {
           id: "tailwind-docs",
           name: "Tailwind CSS",
+          sampleQuestion: "How do I add a custom color?",
         },
 
         {
           id: "chackra-ui-docs",
           name: "Chakra UI",
+          sampleQuestion: "How do I add a checkbox?",
         },
       ],
     },
@@ -68,14 +73,17 @@ export const getDocs = (): DocsKinds[] => {
         {
           id: "xata-guide",
           name: "Xata",
+          sampleQuestion: "How do I query a user table by email?",
         },
         {
           id: "postgres-docs",
           name: "PostgreSQL",
+          sampleQuestion: "How do I query a user table by email?",
         },
         {
           id: "prisma-docs",
           name: "Prisma",
+          sampleQuestion: "How do I query a user table by email?",
         },
       ],
     },
