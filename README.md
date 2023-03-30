@@ -1,9 +1,12 @@
 # Ask Your Stack - have ChatGPT query the docs of your stack
 
+Visit at: [https://ask-your-stack.vercel.app/](https://ask-your-stack.vercel.app/)
+
 This is a sample app that uses [Xata ChatGPT](https://xata.io/chatgpt) functionality.
 
 ## Getting Started
 
+Start by running the instructions in [xata-crawler](https://github.com/tsg/xata-crawler).
 
 ### Install Project Dependencies
 
