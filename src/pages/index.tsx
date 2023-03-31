@@ -233,7 +233,10 @@ export default function Home({
       <main className={styles.main}>
         <div className={styles.container}>
           <h1 className={styles.title}>Ask Your Stack</h1>
-          <p>Ask ChatGPT questions from the docs of your tech stack.</p>
+          <p>
+            Ask ChatGPT questions about your tech stack. We have crawled and
+            loaded in Xata the up-to-date docs from several projects.
+          </p>
           <h3>Select the docs</h3>
           <div className={styles.grid}>
             {docSections.map(({ id, name, docs }) => (

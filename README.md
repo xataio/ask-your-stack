@@ -1,12 +1,22 @@
 # Ask Your Stack - have ChatGPT query the docs of your stack
 
-Visit at: [https://ask-your-stack.vercel.app/](https://ask-your-stack.vercel.app/)
+We have crawled and loaded in Xata the docs from several projects. Select your stack, ask a question and ChatGPT will query the docs of your stack and return the best answer.
 
-This is a sample app that uses [Xata ChatGPT](https://xata.io/chatgpt) functionality.
+Deployed at: [https://ask-your-stack.vercel.app/](https://ask-your-stack.vercel.app/)
 
-## Getting Started
+## How it works
 
-Start by running the instructions in [xata-crawler](https://github.com/tsg/xata-crawler).
+The app uses [Xata AI](https://xata.io/chatgpt) to query ChatGPT with context from the up-to-date docs. This provides more recent information and reduces hallucinations. It uses this high-level algorithm:
+
+* Pass the question to ChatGPT and ask it to provide keywords
+* Use the Xata search functionality to retrieve the most relevant docs
+* Form a prompt using this context and the question and pass it to ChatGPT
+
+This [blog post](https://xata.io/blog/keyword-vs-semantic-search-chatgpt) provides more details on the general approach.
+
+## Development
+
+If you want to deploy this application, start by creating a Xata database and crawling the data by running the instructions from [xata-crawler](https://github.com/tsg/xata-crawler).
 
 ### Install Project Dependencies
 
@@ -16,13 +26,13 @@ npm install
 
 ### Setup environment variables
 
-
-Check the docs on how to [generate your API Key](https://xata.io/docs/getting-started/api-keys).
+Connect to your Xata database by running:
 
 ```
-XATA_API_KEY=< your api key>
-XATA_BRANCH=main
+xata init
 ```
+
+and selecting the database that you have created.
 
 ### Start the app
 
@@ -31,6 +41,6 @@ npm run dev
 ```
 By default the app runs on [localhost:3000](http://localhost:3000)
 
----
+# Questions?
 
-> 🐛 If you encounter any issues while using Xata, please open a [support ticket](https://support.xata.io/hc/en-usrequests/new).
+IF you have any questions, or you'd like to request more documentations, please head over to our [Discord](https://xata.io/discord)
