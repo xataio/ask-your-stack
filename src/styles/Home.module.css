@@ -1,7 +1,15 @@
 .container {
   padding: 0 2rem;
-  width: 75%;
+  width: 80%;
 }
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+    width: 100%;
+  }
+}
+
 
 .main {
   min-height: 100vh;

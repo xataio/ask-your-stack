@@ -145,12 +145,18 @@ export default function Home({
   personalities,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [question, setQuestion] = useState<string>("");
-  const [checked, setChecked] = useLocalStorage<string[]>("docsChecked", []);
+  const [checked, setChecked] = useLocalStorage<string[]>("docsChecked", [
+    "nextjs-docs",
+    "reactjs-docs",
+    "tailwind-docs",
+    "xata-guide",
+  ]);
   const [personality, setPersonality] = useLocalStorage<string>(
     "personality",
     personalities[0].id
   );
   const [sampleQuestions, setSampleQuestions] = useState<string[]>([]);
+  const [epilog, setEpilog] = useState<string>("");
 
   const { answer, isLoading, records, askQuestion } = useAskXataDocs();
   const { relatedDocs, clearRelated } = useGetXataDocs(records);
@@ -169,10 +175,22 @@ export default function Home({
     setSampleQuestions(sampleQuestions);
   }, [checked, docSections]);
 
+  const changeEpilog = () => {
+    let newEpilog = personalities[0].epilog!;
+    for (const p of personalities) {
+      if (p.id === personality && p.epilog) {
+        newEpilog = p.epilog;
+        break;
+      }
+    }
+    setEpilog(newEpilog);
+  };
+
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     clearRelated();
     askQuestion(question, checked, personality);
+    changeEpilog();
   };
 
   // Add/Remove checked item from list
@@ -199,14 +217,8 @@ export default function Home({
     setQuestion(event.currentTarget.innerText);
     clearRelated();
     askQuestion(event.currentTarget.innerText, checked, personality);
+    changeEpilog();
   };
-
-  let epilog = personalities[0].epilog!;
-  for (const p of personalities) {
-    if (p.id === personality && p.epilog) {
-      epilog = p.epilog;
-    }
-  }
 
   return (
     <>
@@ -231,6 +243,7 @@ export default function Home({
                     <div key={`website-${id}`}>
                       <input
                         type="checkbox"
+                        id={id}
                         value={id}
                         onChange={handleCheck}
                         checked={checked.includes(id)}
@@ -248,11 +261,12 @@ export default function Home({
               <div key={`personality-${id}`}>
                 <input
                   type="radio"
+                  id={id}
                   value={id}
                   onChange={handlePersonalityChange}
                   checked={personality === id}
                 ></input>{" "}
-                <label htmlFor="eli5">{display}</label>
+                <label htmlFor={id}>{display}</label>
               </div>
             ))}
           </div>
