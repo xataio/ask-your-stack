@@ -36,20 +36,6 @@ export const getDocs = (): DocsKinds[] => {
       ],
     },
     {
-      id: "platforms",
-      name: "Platforms",
-      docs: [
-        {
-          id: "vercel-docs",
-          name: "Vercel",
-        },
-        {
-          id: "netlify-docs",
-          name: "Netlify",
-        },
-      ],
-    },
-    {
       id: "style",
       name: "Style",
       docs: [
@@ -63,6 +49,27 @@ export const getDocs = (): DocsKinds[] => {
           id: "chackra-ui-docs",
           name: "Chakra UI",
           sampleQuestion: "How do I add a checkbox?",
+        },
+      ],
+    },
+    {
+      id: "auth",
+      name: "Auth",
+      docs: [
+        {
+          id: "clerk-docs",
+          name: "Clerk",
+          sampleQuestion: "How do I setup authentication?",
+        },
+        {
+          id: "nextauth-docs",
+          name: "Auth.js",
+          sampleQuestion: "How do I setup authentication?",
+        },
+        {
+          id: "supabase-auth-docs",
+          name: "Supabase Auth",
+          sampleQuestion: "How do I setup authentication?",
         },
       ],
     },
@@ -83,6 +90,11 @@ export const getDocs = (): DocsKinds[] => {
         {
           id: "prisma-docs",
           name: "Prisma",
+          sampleQuestion: "How do I query a user table by email?",
+        },
+        {
+          id: "supabase-docs",
+          name: "Supabase",
           sampleQuestion: "How do I query a user table by email?",
         },
       ],

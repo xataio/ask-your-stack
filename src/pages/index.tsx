@@ -226,7 +226,7 @@ export default function Home({
         <title>Ask your Stack by Xata</title>
         <meta
           name="description"
-          content="Ask ChatGPT questions from the docs of your tech stack"
+          content="Ask ChatGPT questions from the docs of your tech stack."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
