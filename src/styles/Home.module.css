@@ -183,9 +183,19 @@
   animation: rotation 1s linear infinite;
 }
 
+
 .relatedDocs a {
   color: #0070f3;
   text-decoration: underline;
+}
+
+.sampleQuestions a {
+  color: #0070f3;
+  text-decoration: underline;
+}
+
+.sampleQuestions li {
+  margin-bottom: 0.5rem;
 }
 
 @keyframes rotation {

@@ -43,4 +43,4 @@ By default the app runs on [localhost:3000](http://localhost:3000)
 
 # Questions?
 
-IF you have any questions, or you'd like to request more documentations, please head over to our [Discord](https://xata.io/discord)
+If you have any questions, or you'd like to request more documentations, please head over to our [Discord](https://xata.io/discord).

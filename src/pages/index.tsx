@@ -294,8 +294,8 @@ export default function Home({
               <span className={styles.loader} />
             </div>
           ) : sampleQuestions.length > 0 ? (
-            <div>
-              <p>No inspiration? Try one of these:</p>
+            <div className={styles.sampleQuestions}>
+              <p>Don&apos;t know what to ask? Try one of these:</p>
               {sampleQuestions.map((q) => (
                 <li key={q}>
                   <a href="#" onClick={handleSampleClick}>
